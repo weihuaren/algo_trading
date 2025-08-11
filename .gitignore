@@ -1,3 +1,4 @@
 resources/
 venv/
 log.txt
+_pytest_cache/
