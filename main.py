@@ -7,9 +7,10 @@ from ta.momentum import RSIIndicator
 
 buy_price = None
 profit = 0
+buy_atr = None
 
 def read_csv_to_pandas(file_path, max_records=51):
-    global buy_price, profit
+    global buy_price, profit, buy_atr
     buffer = deque(maxlen=max_records)  # Automatically keeps only the latest N records
 
     with open(file_path, mode='r', newline='', encoding='utf-8') as csvfile:
@@ -64,37 +65,40 @@ def read_csv_to_pandas(file_path, max_records=51):
                     and previous_sme20 < previous_sme50 \
                     and current_rsi > 60 \
                     and current_volume > current_vsma20 \
-                    and current_atr > current_atr20 \
                     and buy_price is None:
                         print(f"Date: {current_timestamp} volume: {current_volume} volume_average: {current_vsma20} SRI14: {current_rsi} SME20: {current_sme20}, SME50: {current_sme50}, Previous SME20: {previous_sme20}, Previous SME50: {previous_sme50}")
                         buy_price = current_price
+                        buy_atr = current_atr
                         print("BUY at ", buy_price)
 
                     # sell logic
                     if current_sme20 < current_sme50 and buy_price is not None:
-                        print(f"Date: {current_timestamp} ATR: {current_atr} SME20: {current_sme20}, SME50: {current_sme50}, Previous SME20: {previous_sme20}, Previous SME50: {previous_sme50}")
+                        print(f"Date: {current_timestamp} ATR: {buy_atr} SME20: {current_sme20}, SME50: {current_sme50}, Previous SME20: {previous_sme20}, Previous SME50: {previous_sme50}")
                         profit = current_price - buy_price
                         print("SOLD at ", current_price)
                         print("PROFIT:", profit)
                         buy_price = None
+                        buy_atr = None
                         profit = profit + profit
                     
                     # take profit logic
-                    if buy_price is not None and (current_price - buy_price) >= current_atr * 3:
-                        print(f"Date: {current_timestamp} ATR: {current_atr} SME20: {current_sme20}, SME50: {current_sme50}, Previous SME20: {previous_sme20}, Previous SME50: {previous_sme50}")
+                    if buy_price is not None and (current_price - buy_price) >= buy_atr * 3:
+                        print(f"Date: {current_timestamp} ATR: {buy_atr} SME20: {current_sme20}, SME50: {current_sme50}, Previous SME20: {previous_sme20}, Previous SME50: {previous_sme50}")
                         profit = current_price - buy_price
                         print("TAKE PROFIT at ", current_price)
                         print("PROFIT:", profit)
                         buy_price = None
+                        buy_atr = None
                         profit = profit + profit
                     
                     # stop loss logic
-                    if buy_price is not None and (buy_price - current_price) >= current_atr * 2:
-                        print(f"Date: {current_timestamp} ATR: {current_atr} SME20: {current_sme20}, SME50: {current_sme50}, Previous SME20: {previous_sme20}, Previous SME50: {previous_sme50}")
+                    if buy_price is not None and (buy_price - current_price) >= buy_atr * 1.5:
+                        print(f"Date: {current_timestamp} ATR: {buy_atr} SME20: {current_sme20}, SME50: {current_sme50}, Previous SME20: {previous_sme20}, Previous SME50: {previous_sme50}")
                         profit = current_price - buy_price 
                         print("STOP LOSS at ", current_price)
                         print("LOSS:", profit)
                         buy_price = None
+                        buy_atr = None
                         profit = profit + profit
             
     print("Final Profit:", profit)            
