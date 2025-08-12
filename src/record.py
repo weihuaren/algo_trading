@@ -4,7 +4,7 @@ from ta.trend import SMAIndicator
 from ta.trend import MACD as MACDIndicator
 from ta.momentum import RSIIndicator
 
-class Data:
+class Record:
     def __init__(self, df: pd.DataFrame):
 
         # Ensure the columns have the correct data types
@@ -21,6 +21,10 @@ class Data:
         # calculate SMA(20)
         sma20 = SMAIndicator(close=df['close'], window=20)
         df['SMA_20'] = sma20.sma_indicator()
+
+        # calculate SMA(200)
+        sma200 = SMAIndicator(close=df['close'], window=200)
+        df['SMA_200'] = sma200.sma_indicator()
 
         # calculate SMA(50)
         sma50 = SMAIndicator(close=df['close'], window=50)
@@ -42,6 +46,7 @@ class Data:
 
         # indicators
         self.SMA_20 = df['SMA_20'].iloc[-1]
+        self.SMA_200 = df['SMA_200'].iloc[-1]
         self.SMA_50 = df['SMA_50'].iloc[-1]
         self.SMA_20_PREV = df['SMA_20'].iloc[-2]
         self.SMA_50_PREV = df['SMA_50'].iloc[-2]
@@ -62,6 +67,6 @@ class Data:
         self.TIMESTAMP = df['timestamp'].iloc[-1]
 
     def __str__(self):
-        return f"Data(TIMESTAMP={self.TIMESTAMP}, OPEN={self.OPEN}, HIGH={self.HIGH}, LOW={self.LOW}, CLOSE={self.CLOSE}, VOLUME={self.VOLUME}, SMA_20={self.SMA_20}, SMA_20_PREV={self.SMA_20_PREV},  SMA_50={self.SMA_50}, SMA_50_PREV={self.SMA_50_PREV}, ATR_14={self.ATR_14}, RSI_14={self.RSI_14}, VA_20={self.VA_20}, MACD={self.MACD}, MACD_signal={self.MACD_signal}, MACD_diff={self.MACD_diff})"
+        return f"Data(TIMESTAMP={self.TIMESTAMP}, OPEN={self.OPEN}, HIGH={self.HIGH}, LOW={self.LOW}, CLOSE={self.CLOSE}, VOLUME={self.VOLUME}, SMA_200={self.SMA_200},SMA_20={self.SMA_20}, SMA_20_PREV={self.SMA_20_PREV},  SMA_50={self.SMA_50}, SMA_50_PREV={self.SMA_50_PREV}, ATR_14={self.ATR_14}, RSI_14={self.RSI_14}, VA_20={self.VA_20}, MACD={self.MACD}, MACD_signal={self.MACD_signal}, MACD_diff={self.MACD_diff})"
     
         

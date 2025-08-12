@@ -2,3 +2,4 @@ resources/
 venv/
 log.txt
 _pytest_cache/
+src/__pycache__/record.cpython-312.pyc
